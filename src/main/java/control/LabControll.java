@@ -1,28 +1,30 @@
 package control;
 
+import dao.AlatLabDAO;
+import dao.BahanLabDAO;
+import dao.PeminjamanDAO;
 import model.AlatLab;
 import model.BahanLab;
 import model.Peminjaman;
-import java.util.ArrayList;
+import java.util.List;
 
 public class LabControll {
-    private final ArrayList<AlatLab> daftarAlat = new ArrayList<>();
-    private final ArrayList<BahanLab> daftarBahan = new ArrayList<>();
-    private final ArrayList<Peminjaman> daftarPeminjaman = new ArrayList<>();
+    // Inisialisasi objek DAO untuk komunikasi langsung dengan database
+    private final AlatLabDAO alatDao = new AlatLabDAO();
+    private final BahanLabDAO bahanDao = new BahanLabDAO();
+    private final PeminjamanDAO peminjamanDao = new PeminjamanDAO();
 
+    // Konstruktor kosong karena data dummy sudah dihapus & bersumber dari database
     public LabControll() {
-        daftarAlat.add(new AlatLab(101, "Mikroskop Cahaya", 5));
-        daftarAlat.add(new AlatLab(102, "Gelas Ukur 100ml", 12));
-
-        daftarBahan.add(new BahanLab(201, "Alkohol 96%", 10, "100 ml"));
     }
     
     public int generateIdAlat() {
-        if (daftarAlat.isEmpty()) {
+        List<AlatLab> listAlat = alatDao.getAll();
+        if (listAlat.isEmpty()) {
             return 101; 
         }
-        int maxId = daftarAlat.get(0).getId();
-        for (AlatLab alat : daftarAlat) {
+        int maxId = listAlat.get(0).getId();
+        for (AlatLab alat : listAlat) {
             if (alat.getId() > maxId) {
                 maxId = alat.getId();
             }
@@ -31,11 +33,12 @@ public class LabControll {
     }
 
     public int generateIdBahan() {
-        if (daftarBahan.isEmpty()) {
+        List<BahanLab> listBahan = bahanDao.getAll();
+        if (listBahan.isEmpty()) {
             return 201; 
         }
-        int maxId = daftarBahan.get(0).getId();
-        for (BahanLab bahan : daftarBahan) {
+        int maxId = listBahan.get(0).getId();
+        for (BahanLab bahan : listBahan) {
             if (bahan.getId() > maxId) {
                 maxId = bahan.getId();
             }
@@ -44,21 +47,19 @@ public class LabControll {
     }
 
     public void tambahAlat(AlatLab alat) {
-        daftarAlat.add(alat);
-        System.out.println("Data alat berhasil ditambahkan ^-^");
+        alatDao.insert(alat);
     }
 
     public void tampilkanAlat() {
+        List<AlatLab> daftarAlat = alatDao.getAll();
         if (daftarAlat.isEmpty()) {
             System.out.println("\nBelum ada data alat di inventaris.");
             return;
         }
         System.out.println("\n======== DAFTAR ALAT LABORATORIUM ========");
         
-        if (!daftarAlat.isEmpty()) {
-            daftarAlat.get(0).cetakLabelKategori();
-            System.out.println("----------------------------------------------------------");
-        }
+        daftarAlat.get(0).cetakLabelKategori();
+        System.out.println("----------------------------------------------------------");
 
         for (int i = 0; i < daftarAlat.size(); i++) {
             System.out.print((i + 1) + ". ");
@@ -67,16 +68,11 @@ public class LabControll {
     }  
     
     public void cariAlat(int idAlat) {
-        boolean ditemukan = false;
-        for (AlatLab alat : daftarAlat) {
-            if (alat.getId() == idAlat) {
-                System.out.println("Alat ditemukan: ");
-                alat.tampilkanInfo();
-                ditemukan = true;
-                break;
-            }
-        }
-        if (!ditemukan) {
+        AlatLab alat = alatDao.getById(idAlat);
+        if (alat != null) {
+            System.out.println("Alat ditemukan: ");
+            alat.tampilkanInfo();
+        } else {
             System.out.println("Alat dengan ID " + idAlat + " tidak ditemukan.");
         }
     }
@@ -89,6 +85,7 @@ public class LabControll {
         
         boolean ditemukan = false;
         System.out.println("\n====== HASIL PENCARIAN ALAT ======");
+        List<AlatLab> daftarAlat = alatDao.getAll();
         for (AlatLab alat : daftarAlat) {
             if (alat.getNama().toLowerCase().contains(namaAlat.toLowerCase())) {
                 alat.tampilkanInfo();
@@ -101,41 +98,38 @@ public class LabControll {
         }
     }
 
-    public void ubahAlat(int idUbah, String namaBaru, int jumlahBaru) {
-        boolean ditemukan = false;
-        for (AlatLab alat : daftarAlat) {
-            if (alat.getId() == idUbah) {
-                if (!namaBaru.isEmpty()) {
-                    alat.setNama(namaBaru);
-                }
-                alat.setJumlah(jumlahBaru);
-                System.out.println("Data alat berhasil diubah ^-^");
-                ditemukan = true;
-                break;
+    // Diperbarui menjadi 4 parameter untuk menangani kondisi baru
+    public void ubahAlat(int idUbah, String namaBaru, int jumlahBaru, String kondisiBaru) {
+        AlatLab alat = alatDao.getById(idUbah);
+        if (alat != null) {
+            if (!namaBaru.isEmpty()) {
+                alat.setNama(namaBaru);
             }
+            alat.setJumlah(jumlahBaru);
+            if (!kondisiBaru.isEmpty()) {
+                alat.setKondisi(kondisiBaru);
+            }
+            alatDao.update(alat);
+        } else {
+            System.out.println("Alat dengan ID tersebut tidak ditemukan.");
         }
-        if (!ditemukan) System.out.println("Alat dengan ID tersebut tidak ditemukan.");
     }
 
     public void hapusAlat(int idHapus) {
-        boolean ditemukan = false;
-        for (int i = 0; i < daftarAlat.size(); i++) {
-            if (daftarAlat.get(i).getId() == idHapus) {
-                daftarAlat.remove(i);
-                System.out.println("Data alat berhasil dihapus");
-                ditemukan = true;
-                break;
-            }
+        AlatLab alat = alatDao.getById(idHapus);
+        if (alat != null) {
+            alatDao.delete(idHapus);
+        } else {
+            System.out.println("Alat dengan ID tersebut tidak ditemukan.");
         }
-        if (!ditemukan) System.out.println("Alat dengan ID tersebut tidak ditemukan.");
     }
 
     public void tambahBahan(BahanLab bahan) {
-        daftarBahan.add(bahan);
-        System.out.println("Data bahan berhasil ditambahkan ^-^");
+        bahanDao.insert(bahan);
     }
 
     public void tampilkanBahan() {
+        List<BahanLab> daftarBahan = bahanDao.getAll();
         if (daftarBahan.isEmpty()) {
             System.out.println("\nBelum ada data bahan di inventaris.");
             return;
@@ -148,58 +142,49 @@ public class LabControll {
     }
 
     public void ubahBahan(int idUbah, String namaBaru, int jumlahBaru, String satuanBaru) {
-        boolean ditemukan = false;
-        for (BahanLab bahan : daftarBahan) {
-            if (bahan.getId() == idUbah) {
-                if (!namaBaru.isEmpty()) {
-                    bahan.setNama(namaBaru);
-                }
-                bahan.setJumlah(jumlahBaru);
-                if (!satuanBaru.isEmpty()) {
-                    bahan.setSatuan(satuanBaru);
-                }
-                System.out.println("Data bahan berhasil diubah ^-^");
-                ditemukan = true;
-                break;
+        BahanLab bahan = bahanDao.getById(idUbah);
+        if (bahan != null) {
+            if (!namaBaru.isEmpty()) {
+                bahan.setNama(namaBaru);
             }
+            bahan.setJumlah(jumlahBaru);
+            if (!satuanBaru.isEmpty()) {
+                bahan.setSatuan(satuanBaru);
+            }
+            bahanDao.update(bahan);
+        } else {
+            System.out.println("Bahan dengan ID tersebut tidak ditemukan.");
         }
-        if (!ditemukan) System.out.println("Bahan dengan ID tersebut tidak ditemukan.");
     }
 
     public void hapusBahan(int idHapus) {
-        boolean ditemukan = false;
-        for (int i = 0; i < daftarBahan.size(); i++) {
-            if (daftarBahan.get(i).getId() == idHapus) {
-                daftarBahan.remove(i);
-                System.out.println("Data bahan berhasil dihapus");
-                ditemukan = true;
-                break;
-            }
+        BahanLab bahan = bahanDao.getById(idHapus);
+        if (bahan != null) {
+            bahanDao.delete(idHapus);
+        } else {
+            System.out.println("Bahan dengan ID tersebut tidak ditemukan.");
         }
-        if (!ditemukan) System.out.println("Bahan dengan ID tersebut tidak ditemukan.");
     }
 
     public void tambahPeminjaman(Peminjaman peminjaman) {
-        AlatLab alatDipinjam = null;
-        for (AlatLab alat : daftarAlat) {
-            if (alat.getId() == peminjaman.getIdAlatPinjam()) {
-                alatDipinjam = alat;
-                break;
-            }
-        }
+        AlatLab alatDipinjam = alatDao.getById(peminjaman.getIdAlatPinjam());
 
         if (alatDipinjam == null) {
-            System.out.println("Gagal: ID Alat yang ingin dipinjam tidak terdaftar di inventaris.");
+            System.out.println("Gagal: ID Alat yang ingin dipinjam tidak terdaftar di database.");
         } else if (alatDipinjam.getJumlah() < peminjaman.getJumlahPinjam()) {
             System.out.println("Gagal: Stok alat tidak mencukupi. Sisa stok saat ini: " + alatDipinjam.getJumlah());
         } else {
+            // Kurangi stok alat di database
             alatDipinjam.setJumlah(alatDipinjam.getJumlah() - peminjaman.getJumlahPinjam());
-            daftarPeminjaman.add(peminjaman);
-            System.out.println("Peminjaman berhasil dicatat dan stok alat diperbarui");
+            alatDao.update(alatDipinjam);
+            
+            // Simpan data peminjaman ke database
+            peminjamanDao.insert(peminjaman);
         }
     }
 
     public void tampilkanPeminjaman() {
+        List<Peminjaman> daftarPeminjaman = peminjamanDao.getAll();
         if (daftarPeminjaman.isEmpty()) {
             System.out.println("\nBelum ada data peminjaman aktif.");
             return;
@@ -212,26 +197,16 @@ public class LabControll {
     }
 
     public void pengembalian(int idKembali) {
-        Peminjaman peminjamanDitemukan = null;
-        int indexHapus = -1;
-
-        for (int i = 0; i < daftarPeminjaman.size(); i++) {
-            if (daftarPeminjaman.get(i).getIdPeminjaman() == idKembali) {
-                peminjamanDitemukan = daftarPeminjaman.get(i);
-                indexHapus = i;
-                break;
-            }
-        }
+        Peminjaman peminjamanDitemukan = peminjamanDao.getById(idKembali);
 
         if (peminjamanDitemukan != null) {
-            for (AlatLab alat : daftarAlat) {
-                if (alat.getId() == peminjamanDitemukan.getIdAlatPinjam()) {
-                    alat.setJumlah(alat.getJumlah() + peminjamanDitemukan.getJumlahPinjam());
-                    break;
-                }
+            AlatLab alat = alatDao.getById(peminjamanDitemukan.getIdAlatPinjam());
+            if (alat != null) {
+                alat.setJumlah(alat.getJumlah() + peminjamanDitemukan.getJumlahPinjam());
+                alatDao.update(alat);
             }
-            daftarPeminjaman.remove(indexHapus);
-            System.out.println("Pengembalian berhasil dicatat. Stok alat telah dikembalikan ^-^");
+            peminjamanDao.delete(idKembali);
+            System.out.println("Pengembalian berhasil dicatat. Stok alat telah dikembalikan ke database ^-^");
         } else {
             System.out.println("ID Peminjaman tidak ditemukan.");
         }

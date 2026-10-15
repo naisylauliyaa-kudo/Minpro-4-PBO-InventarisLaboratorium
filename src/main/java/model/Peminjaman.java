@@ -24,6 +24,10 @@ public class Peminjaman {
     public int getIdPeminjaman(){
         return idPeminjaman;
     }
+    
+    public String getNamaPeminjam() {
+        return namaPeminjam;
+    }
    
     public int getIdAlatPinjam(){
         return idAlatPinjam;

@@ -1,8 +1,14 @@
 model\InformasiLab.class
-model\KeperluanLab.class
 control\LabControll.class
+dao\DAO.class
 view\TampilkanInventarisLab.class
+dao\BahanLabDAO.class
+dao\PeminjamanDAO.class
+model\AlatLab.class
+model\KeperluanLab.class
+dao\AlatLabDAO.class
+config\Koneksi.class
 model\BahanLab.class
 com\mycompany\inventarislab\InventarisLab.class
+config\TesORM.class
 model\Peminjaman.class
-model\AlatLab.class

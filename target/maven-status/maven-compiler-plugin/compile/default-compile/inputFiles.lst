@@ -1,5 +1,11 @@
 D:\MINIPROJEK PBO\InventarisLab\src\main\java\com\mycompany\inventarislab\InventarisLab.java
+D:\MINIPROJEK PBO\InventarisLab\src\main\java\config\Koneksi.java
+D:\MINIPROJEK PBO\InventarisLab\src\main\java\config\TesORM.java
 D:\MINIPROJEK PBO\InventarisLab\src\main\java\control\LabControll.java
+D:\MINIPROJEK PBO\InventarisLab\src\main\java\dao\AlatLabDAO.java
+D:\MINIPROJEK PBO\InventarisLab\src\main\java\dao\BahanLabDAO.java
+D:\MINIPROJEK PBO\InventarisLab\src\main\java\dao\DAO.java
+D:\MINIPROJEK PBO\InventarisLab\src\main\java\dao\PeminjamanDAO.java
 D:\MINIPROJEK PBO\InventarisLab\src\main\java\model\AlatLab.java
 D:\MINIPROJEK PBO\InventarisLab\src\main\java\model\BahanLab.java
 D:\MINIPROJEK PBO\InventarisLab\src\main\java\model\InformasiLab.java

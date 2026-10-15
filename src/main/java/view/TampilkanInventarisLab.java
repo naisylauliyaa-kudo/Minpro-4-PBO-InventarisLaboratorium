@@ -87,7 +87,7 @@ public class TampilkanInventarisLab {
 
         do {
             System.out.println("\n^-^ ============================================ ^-^");
-            System.out.println("           SISTEM INVENTARIS LABORATORIUM");
+            System.out.println("            SISTEM INVENTARIS LABORATORIUM");
             System.out.println("^-^ ============================================ ^-^");
             System.out.println("1. Tambah Data");
             System.out.println("2. Lihat Data & Cari Alat");
@@ -127,8 +127,19 @@ public class TampilkanInventarisLab {
                         int idAlat = crud.generateIdAlat();
                         String namaAlat = inputValidasiNama("Nama Alat: ");
                         int jumlahAlat = inputValidasiAngkaPositif("Jumlah: ");
+                        
+                        String kondisiAlat = "";
+                        while (true) {
+                            System.out.print("Kondisi Alat (Baik/Cukup/Rusak): ");
+                            kondisiAlat = input.nextLine();
+                            if (kondisiAlat.isEmpty()) {
+                                System.out.println("Kondisi tidak boleh kosong!");
+                                continue;
+                            }
+                            break;
+                        }
 
-                        crud.tambahAlat(new AlatLab(idAlat, namaAlat, jumlahAlat));
+                        crud.tambahAlat(new AlatLab(idAlat, namaAlat, jumlahAlat, kondisiAlat));
 
                     } else if (subTambah.equals("2")) {
                         System.out.println("\n======= TAMBAH BAHAN =======");
@@ -217,7 +228,14 @@ public class TampilkanInventarisLab {
                         }
 
                         int jmlBaru = inputValidasiAngkaPositif("Jumlah Baru: ");
-                        crud.ubahAlat(idUbah, namaBaru, jmlBaru);
+
+                        System.out.print("Kondisi Baru (Baik/Cukup/Rusak): ");
+                        String kondisiBaru = input.nextLine();
+                        if (kondisiBaru.isEmpty()) {
+                            kondisiBaru = "Baik"; // Default jika dikosongkan
+                        }
+
+                        crud.ubahAlat(idUbah, namaBaru, jmlBaru, kondisiBaru);
 
                     } else if (subUbah.equals("2")) {
                         crud.tampilkanBahan();
@@ -276,7 +294,6 @@ public class TampilkanInventarisLab {
                     System.out.println("2. Lihat Peminjaman");
                     System.out.println("3. Pengembalian");
 
-                    // Diperbaiki agar tidak ada cetak ganda teks "Pilih"
                     int pilihanPinjam = inputValidasiAngkaPositif("Pilih menu peminjaman (1-3): ");
 
                     if (pilihanPinjam == 1) {
