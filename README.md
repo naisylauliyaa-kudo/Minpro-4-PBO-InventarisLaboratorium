@@ -517,10 +517,8 @@ Bisa dilihat bahwasanya penambahan dari Apache sudah dapat tersambung ke dalam d
 ---
 
 ## 11. Kesimpulan
-Berdasarkan perancangan, pengembangan, dan pengujian yang telah dilakukan, program InventarisLab berhasil dibangun dengan menerapkan arsitektur Model-View-Controller (MVC) yang memisahkan pengelolaan data, tampilan antarmuka, dan logika kontrol secara terstruktur. Program ini juga telah menerapkan konsep Pemrograman Berorientasi Objek (OOP), seperti Inheritance dan Encapsulation pada class model serta Polymorphism melalui method overriding. Selain itu, program dilengkapi dengan fitur pengelolaan data inventaris, peminjaman, pengembalian alat, dan validasi input untuk memastikan data yang dimasukkan sesuai dengan ketentuan. Berdasarkan hasil pengujian, fitur-fitur tersebut dapat berjalan sesuai dengan skenario yang telah ditentukan.
+Berdasarkan perancangan, pengembangan, dan pengujian yang telah dilakukan, program Sistem Inventaris Laboratorium berhasil dibangun dengan menerapkan arsitektur Model-View-Controller (MVC) yang memisahkan pengelolaan data, tampilan antarmuka, dan logika kontrol secara terstruktur. Program ini juga telah menerapkan konsep Pemrograman Berorientasi Objek (OOP) secara lengkap, seperti Inheritance dan Encapsulation pada kelas model, serta Polymorphism melalui method overriding dan overloading.
 
-
-
-
+Selain itu, sistem telah berhasil diintegrasikan dengan database MySQL melalui pola Data Access Object (DAO) dan konfigurasi persistensi ORM/JPA (Hibernate) guna memastikan seluruh proses operasional data (CRUD), manajemen stok, pencatatan peminjaman, serta pengembalian alat dapat tersimpan secara permanen dan aman. Dilengkapi dengan validasi input yang ketat pada setiap fiturnya, program telah teruji dan berjalan sesuai dengan skenario yang ditentukan.
 
 
